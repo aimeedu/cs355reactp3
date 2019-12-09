@@ -1,7 +1,10 @@
+//Used to deal with Paths
+const path  = require('path');
+
 const request = require('request');
 const fs = require('fs');
 
-const db = require('./queries')
+const db = require('./queries');
 const express = require("express");
 const app = express();
 
@@ -9,8 +12,19 @@ const app = express();
 const cheerio = require('cheerio');
 const axios = require('axios');
 const {Pool} = require("pg");
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 // const router = require("express").Router;
+
+//Serve static assets if in production
+if(process.env.NODE_ENV === 'production') {
+    //Set static folder
+    app.use(express.static('backend/build'));
+
+    app.get('*',(req,res) => {
+        res.sendFile(__dirname, 'backend','build', 'index.html');
+    })
+}
+
 // process is a global object.
 const port = process.env.PORT || 5000;
 //cors: cross origin resource sharing, allowed ajax request access resource from remote host.
