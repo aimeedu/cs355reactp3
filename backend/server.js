@@ -1,16 +1,12 @@
 const request = require('request');
-const fs = require('fs');
-
 const db = require('./queries')
 const express = require("express");
 const app = express();
-
-
 const cheerio = require('cheerio');
 const axios = require('axios');
 const {Pool} = require("pg");
 const bodyParser = require('body-parser')
-// const router = require("express").Router;
+
 // process is a global object.
 const port = process.env.PORT || 5000;
 //cors: cross origin resource sharing, allowed ajax request access resource from remote host.
@@ -30,7 +26,8 @@ app.use(
     }));
 
 
-// move to queries.js later -------------------------------------------------------
+/** this is the data basepart move to queries.js later -------------------------------------------------------*/
+
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 // password stored as environment variable.
@@ -44,7 +41,10 @@ const config = {
     ssl: true
 }
 const pool = new Pool(config);
-// move to queries.js later --------------------------------------------------------
+
+/**this is the database part move to queries.js later --------------------------------------------------------*/
+
+
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 
@@ -52,6 +52,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 // actual end point is http://localhost:5000/admin
 app.get('/admin', db.getSearchTable);
 
+/** insert into the page table when indexing */
 app.post('/admin', (req,res)=>{
     const getURL = req.body.inputURL;
     let title, description, lastModified;
@@ -74,7 +75,7 @@ app.post('/admin', (req,res)=>{
             lastModified = res.headers['last-modified'];
         }
 
-        // /*If the lastModified is unavailable set the lastModified to the current time stamp */
+        /** If the lastModified is unavailable set the lastModified to the current time stamp */
 
         if (lastModified != null) {
             pool.query('INSERT INTO page (url, title, description, lastModified) VALUES ($1, $2, $3, $4)', [getURL, title, description, lastModified], (error) => {
@@ -100,14 +101,14 @@ app.get('/custom', (req, res) => {
 
 // the crawler gets all the plain text from the body of a web page --------------------------------------------------------
 const URL = 'https://www.apple.com';
-let counts = {};  // key is the actual word, not a indices
-let keys = []; // (K, V) key is the word, and value is the count
-/** We create an array parsedWords which stores the words into an array
- * which will be used later to insert into the database based on their indices */
-// --------------------------------------------------------
-    // call this function before anything else.
+let counts = {};  /** key is the actual word, not a indices */
+let keys = []; /** (K, V) key is the word, and value is the count */
+
+/** if the index not queried back yet, we need to wait lastPageID, lastWordID, lastPageWordID assigned new value other than 0. */
+/** only those 3 variables get new value, we can go to crawl the web page. */
 
 const getLastId = () => {
+    /** query the last index from 3 tables, then when we insert new data, the index is continued from the last index in the table. */
     let lastPageID=0, lastWordID=0, lastPageWordID=0;
      //can not be updated.
     pool.query('SELECT MAX(pageid) FROM page;', (error, result) => {
@@ -122,17 +123,13 @@ const getLastId = () => {
     });
     // console.log(lastPageID);
 }
-
 getLastId();
 
-// console.log(getLastId);
 
-// if (lastPageID===0|| lastWordID===0 || lastPageWordID===0){
-//
-// }
-// console.log(lastPageID);
-// --------------------------------------------------------
-const insertWP = request(URL, function (err, res, body) {
+/** -------------------------------------------------------- */
+
+request(URL, function (err, res, body) {
+    /** 1. query the last index from 3 tables, then when we insert new data, the index is continued from the last index in the table. */
     let lastPageID=0, lastWordID=0, lastPageWordID=0; //can not be updated.
 
     // pool.query('SELECT MAX(pageid) FROM page;', (error, result) => {
@@ -145,6 +142,8 @@ const insertWP = request(URL, function (err, res, body) {
     //     lastPageWordID = result.rows[0].max;
     // });
 
+    /** 2. after retrieve 3 last index , we call the crawler to get the data */
+
     if(err) {
         console.log(err, "error occured while hitting URL");
     }
@@ -153,11 +152,13 @@ const insertWP = request(URL, function (err, res, body) {
         let txt = $('body').text();
         setup(txt);
 
-        //convert counts {...} to an array of array [[,],[,]...]
+        /** convert counts {  "word1": 34, "word2": 5, "word3": 1 ... } to an array of array [[word, freq], [word1, 34], [word2, 5], [word3, 1] ...] */
         let converted = Object.entries(counts);
         let len = converted.length;
 
         for (let i = lastWordID+1; i < len; i++) {
+            /** the code below should work fine if each time we can get last index properly */
+            /** if the last index is 0, we can not insert new data for the first url, because the PK must be unique.*/
             // pool.query('INSERT INTO word (wordid, wordName) VALUES ($1, $2)', [i, converted[i-1][0]], (error) => {
             //     if (error) {
             //         throw error
