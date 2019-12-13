@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 
 const searchSchema = new Schema({
     searchid: { type: Number, required: true, unique: true },
-    terms: { type: String, required: true, trim: true },
+    term: { type: String, required: true, trim: true },
     count: { type: Number, required: false },
-    searchdate: { type: Date, required: false },
+    /** searchdate we can use the default timestamps searchdate: { type: Date, required: false }, */
     timetosearch: { type: Number, required: false }
 }, {
     timestamps: true,
 });
 
-const Search = mongoose.model('PageWord', searchSchema);
+const Search = mongoose.model('Search', searchSchema);
 module.exports = Search;

@@ -7,7 +7,7 @@ const pagewordSchema = new Schema({
     // pageid:	{ type: Number, required: true, unique: true },
     // wordid: { type: Number, required: true, unique: true },
     //
-    url	:{ type: String, required: true, trim: true }
+    url	:{ type: String, required: true, trim: true },
     // title: { type: String, required: true, trim: true},
     // description: { type: String, required: true, trim: true },
     // // lastmodified: { type: Date, required: true },
@@ -15,7 +15,7 @@ const pagewordSchema = new Schema({
     // // timetoindex	: { type: Number, required: true },
     //
     // wordname: { type: String, required: false },
-    // freq: { type: Number, required: true }
+    freq: { type: Number, required: true }
 }, {
     timestamps: true,
 });
