@@ -37,13 +37,11 @@ connection.once('open', () => {
 
 /** require the files */
 const searchRouter = require('./routes/search');
-const pagewordRouter = require('./routes/pageword');
-const usersRouter = require('./routes/users');
+const pageRouter = require('./routes/page');
 
 /** go to /custom, load methods in searchRouter */
 app.use('/custom', searchRouter);
-app.use('/admin', pagewordRouter);
-app.use('/users', usersRouter);
+app.use('/admin', pageRouter);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 

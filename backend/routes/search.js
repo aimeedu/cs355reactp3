@@ -12,18 +12,13 @@ router.route('/').get((req, res) => {
 
 // endpoints. post request handle insert into search table.
 router.route('/').post((req, res) => {
-    const searchid = req.body.searchid;
+    // const searchid, count, timetosearch ;
     const term = req.body.term;
-    const count = req.body.count;
-
+    // console.log(term);
     /** searchdate is the default timestamps*/
-    const timetosearch = req.body.timetosearch;
 
     const newSearch = new Search({
-        searchid,
-        term,
-        count,
-        timetosearch
+        term
     });
 
     newSearch.save()

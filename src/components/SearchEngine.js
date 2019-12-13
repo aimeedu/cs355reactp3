@@ -18,20 +18,17 @@ class SearchEngine extends Component {
     search = async (e) => {
         e.preventDefault();
         const term = e.target.elements.userInput.value;
-        console.log(term);
-        this.setState({
-            term
-        })
-        //pass the term to the backend route.
-        axios.post('/custom', {term})
+        // console.log(term);
+        // this.setState({
+        //     term
+        // })
+        /** send the term to back end */
+        axios.post('http://localhost:5000/custom', {term})
             .then((res)=>{
-                // console.log(res.data);
+                console.log(res.data);
                 // console.log('Pass term to back end!');
             })
-        /** send the term to back end
-         * fetch something from the database page_word table?
-         * what are we displaying here?
-         * insert into the search table*/
+
     }
 
     checkCase = () => {
