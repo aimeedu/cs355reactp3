@@ -21,5 +21,13 @@
     "mongoose": "^5.7.8",
     "pg": "^7.13.0",
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "crawler": "^1.2.1",
+    "js-crawler": "^0.3.21",
+    "moment": "^2.24.0",
+    "node-stopwatch": "0.0.1",
+    "statman-stopwatch": "^2.11.1",
+    "valid-url": "^1.0.9"
   }
 }
