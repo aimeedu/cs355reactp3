@@ -1,6 +1,6 @@
 const Crawler   = require("crawler");
 const    Stopwatch = require('statman-stopwatch');
-const    moment    = require("moment");
+
 
 let date = new Date(); // Default value for lastModified if site is missing the required header
 
