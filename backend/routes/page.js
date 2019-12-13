@@ -9,7 +9,7 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/').post((req, res) => {
-    const url = req.body.url;
+    const url = req.body.inputURL;
     console.log(url);
     // const title = req.body.title;
     // const description = req.body.description;

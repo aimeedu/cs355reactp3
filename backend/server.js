@@ -38,6 +38,14 @@ connection.once('open', () => {
 /** require the files */
 const searchRouter = require('./routes/search');
 const pageRouter = require('./routes/page');
+// const Crawler = require("js-crawler");
+
+// const crawler = new Crawler().configure({
+//     depth: 2,
+// });
+// crawler.crawl("https://www.wikipedia.org/", function(page) {
+//     console.log(page.url);
+// });
 
 /** go to /custom, load methods in searchRouter */
 app.use('/custom', searchRouter);

@@ -107,22 +107,22 @@ class SearchGoogle extends Component {
                 <Download data={this.state.data} />
 
                 <div className="container">
-                        {this.state.data.map((data, i) => {
-                            return (
-                                <div key={i} className="row">
-                                    <div className="col-sm-2"></div>
-                                    <div className="col-sm-8">
-                                        <div className="box">
-                                            <input data-index={i} className="checkbox" type="checkbox" name="check" onChange={this.checkBox}/>
-                                            {/*<button className="btn btn-outline-primary" data-index={i} onClick={this.delete}> Delete </button>*/}
-                                            <h4>{data.title}</h4>
-                                            <h5><a href={data.url}>{data.url}</a></h5>
-                                            <h5>{data.description}</h5>
-                                        </div>
+                    {this.state.data.map((data, i) => {
+                        return (
+                            <div key={i} className="row">
+                                <div className="col-sm-2"></div>
+                                <div className="col-sm-8">
+                                    <div className="box">
+                                        <input data-index={i} className="checkbox" type="checkbox" name="check" onChange={this.checkBox}/>
+                                        {/*<button className="btn btn-outline-primary" data-index={i} onClick={this.delete}> Delete </button>*/}
+                                        <h4>{data.title}</h4>
+                                        <h5><a href={data.url}>{data.url}</a></h5>
+                                        <h5>{data.description}</h5>
                                     </div>
                                 </div>
-                            )})}
-
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
 

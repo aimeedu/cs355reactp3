@@ -12,6 +12,7 @@ class SearchEngine extends Component {
             caseInsensitive: false,
             partialMatch: false,
             term: null,
+            data:[]
         }
     }
 
@@ -19,16 +20,20 @@ class SearchEngine extends Component {
         e.preventDefault();
         const term = e.target.elements.userInput.value;
         // console.log(term);
-        // this.setState({
-        //     term
-        // })
+        this.setState({
+            term
+        })
         /** send the term to back end */
         axios.post('http://localhost:5000/custom', {term})
             .then((res)=>{
                 console.log(res.data);
                 // console.log('Pass term to back end!');
             })
-
+        axios.get('http://localhost:5000/admin')
+            .then((res)=>{
+                console.log(res.data);
+                // console.log('Pass term to back end!');
+            })
     }
 
     checkCase = () => {
@@ -64,6 +69,13 @@ class SearchEngine extends Component {
                 <Download data={this.state.data} />
 
                 <h3> Search Result: {this.state.term}</h3>
+
+                /** when click search button
+                    pass the term to backend, insert into search table/ done
+                    query the page table. find all the entries with certain words.
+                    display the result
+                    download the result
+                */
 
             </div>
         )
