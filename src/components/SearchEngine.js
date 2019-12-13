@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Button, Form, FormControl} from "react-bootstrap";
 import './Components.css';
+import Download from "./Download";
+import axios from "axios";
 
 class SearchEngine extends Component {
 
@@ -20,8 +22,14 @@ class SearchEngine extends Component {
         this.setState({
             term
         })
-
-        /** fetch something from the database page_word table?
+        //pass the term to the backend route.
+        axios.post('/custom', {term})
+            .then((res)=>{
+                // console.log(res.data);
+                // console.log('Pass term to back end!');
+            })
+        /** send the term to back end
+         * fetch something from the database page_word table?
          * what are we displaying here?
          * insert into the search table*/
     }
@@ -55,6 +63,9 @@ class SearchEngine extends Component {
                     <FormControl className="mr-sm-1 searchBar" type="text" placeholder="Type a word to Search." name="userInput"/>
                     <Button id="searchBtn" variant="btn btn-light purple-btn" type="submit">Search</Button>
                 </Form>
+
+                <Download data={this.state.data} />
+
                 <h3> Search Result: {this.state.term}</h3>
 
             </div>

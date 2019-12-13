@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "serversql.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node serversql.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "mongoose": "^5.7.8",
+    "nodemon": "^2.0.2",
     "pg": "^7.13.0",
     "request": "^2.88.0"
   }
