@@ -8,8 +8,6 @@ const axios = require('axios');
 const router = require('express').Router();
 const bodyParser = require('body-parser')
 
-
-
 // process is a global object.
 const port = process.env.PORT || 5000;
 //cors: cross origin resource sharing, allowed ajax request access resource from remote host.
@@ -28,7 +26,6 @@ app.use(
         extended: true,
     }));
 
-
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
 );
@@ -42,17 +39,9 @@ const searchRouter = require('./routes/search');
 const pageRouter = require('./routes/page');
 
 /** go to /custom, load methods in searchRouter */
-// app.use('/custom', searchRouter);
-// app.use('/admin', pageRouter);
-
 app.use('/custom', searchRouter);
 app.use('/admin', pageRouter);
 
-// router.route('/custom/:wordname').get((req, res) => {
-//     pageRouter.Page.find(w => w.wordname === req.params.wordname)
-//         .then(w => res.json(w))
-//         .catch(err => res.status(400).json('Error: ' + err));
-// });
 
 // const Crawler = require("js-crawler");
 
@@ -63,21 +52,21 @@ app.use('/admin', pageRouter);
 //     console.log(page.url);
 // });
 
-const as = [{id:1, name:"aimee"},{id:2, name:"amy"}];
-
-app.get('/', (req, res) => {
-    res.send("heo");
-});
-
-
-app.get('/test', (req, res) => {
-    res.send(as);
-});
-
-app.get('/test/:name', (req, res) => {
-    const re = as.find(a => a.name === req.params.name);
-    res.send(re);
-});
+// const as = [{id:1, name:"aimee"},{id:2, name:"amy"}];
+//
+// app.get('/', (req, res) => {
+//     res.send("heo");
+// });
+//
+//
+// app.get('/test', (req, res) => {
+//     res.send(as);
+// });
+//
+// app.get('/test/:name', (req, res) => {
+//     const re = as.find(a => a.name === req.params.name);
+//     res.send(re);
+// });
 
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

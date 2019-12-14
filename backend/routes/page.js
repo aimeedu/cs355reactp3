@@ -1,6 +1,7 @@
-
 const router = require('express').Router();
 let Page = require('../models/page.model');
+
+// Page.index({ wordname: 'text' });
 
 router.route('/').get((req, res) => {
     Page.find()
@@ -8,18 +9,27 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-/** use this route when we trying to search for the term. put term in the query string */
+/** try partial match */
 // router.route('/:wordname').get((req, res) => {
-//
-//     const ak = Page.find(w => w[0])
-//         // => w.wordname == req.params.wordname)
-//     // res.json(ak);
-//     console.log(ak);
-//         // .then(w => res.json(w))
-//         // .catch(err => res.status(400).json('Error: ' + err));
-// });
+//     let fe = req.params.wordname;
+//     Page.find({
+//         $text: {
+//             $search: wordname
+//         }
+//     }, function(err, result) {
+//         if (err) throw err;
+//         if (result) {
+//             res.json(result)
+//         } else {
+//             res.send(JSON.stringify({
+//                 error : 'Error'
+//             }))
+//         }
+//     })
+// })
 
 
+/** use this route when we trying to search for the term. put term in the query string */
 router.route('/:wordname').get((req, res) => {
     let fe = req.params.wordname;
 
@@ -40,19 +50,28 @@ router.route('/:wordname').get((req, res) => {
 
 router.route('/').post((req, res) => {
     const url = req.body.inputURL;
-    console.log(url);
-    // const title = req.body.title;
-    // const description = req.body.description;
-    // const wordname = req.body.wordname;
-    // const freq = Number(req.body.freq);
-    // const timetoindex = Number(req.body.timetoindex);
+    const title = req.body.title;
+    const description = req.body.description;
+    const wordname = req.body.wordname;
+    let freq, timetoindex;
+    if(req.body.freq){
+        freq = Number(req.body.freq);
+    }else {
+        freq = 666;
+    }
+    if(req.body.timetoindex) {
+        timetoindex = Number(req.body.timetoindex);
+    } else {
+        timetoindex = Number(0.000000067);
+    }
 
     const newPage = new Page({
-        url
-        // title,
-        // description,
-        // wordname,
-        // freq
+        url,
+        title,
+        description,
+        wordname,
+        freq,
+        timetoindex
     });
 
     newPage.save()
