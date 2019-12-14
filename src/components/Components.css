@@ -1,3 +1,6 @@
+#ch {
+    align-self: end;
+}
 
 label {
     color: #ffbf67;
@@ -111,6 +114,7 @@ h5 a:hover {
     background: rgba(147, 157, 255, 0.2);
     /*border-radius: 20px;*/
     overflow-wrap: break-word;
+
 }
 
 h2 a {

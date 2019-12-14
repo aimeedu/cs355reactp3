@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Button, Form, FormControl} from "react-bootstrap";
 import './Components.css';
+import Download from "./Download";
+import axios from "axios";
 
 class SearchEngine extends Component {
 
@@ -10,20 +12,55 @@ class SearchEngine extends Component {
             caseInsensitive: false,
             partialMatch: false,
             term: null,
+            data:[]
         }
     }
-
+    /** Here, we are using $text and $search MongoDB operators for find all documents in collection collectionName which contains at least one word from the specified find query.
+     partial search */
     search = async (e) => {
         e.preventDefault();
         const term = e.target.elements.userInput.value;
-        console.log(term);
+        const username = e.target.elements.userInput.value;
         this.setState({
             term
         })
+        // console.log(term);
 
-        /** fetch something from the database page_word table?
-         * what are we displaying here?
-         * insert into the search table*/
+        /** send the term to back end */
+        axios.post('http://localhost:5000/custom', {term})
+            .then((res)=>{
+                console.log(res.data);
+                // console.log('Pass term to back end!');
+            });
+
+        const api_call = await fetch(`http://localhost:5000/admin/${term}`);
+        const data = await api_call.json();
+
+        this.setState({
+            data: data
+        })
+        console.log(this.state.data);
+
+    }
+    // a controlled form handles all form changes via state, which is a very React way of doing things.
+    checkBox = (event) => {
+
+        const index = event.target.dataset.index;
+
+        this.setState(state => {
+            const data = [...state.data];
+            const object = state.data[index];
+            object.isChecked = !object.isChecked;
+            data.splice(index, 1, object);
+            return {
+                data
+            }
+        })
+
+        console.log(this.state.data);
+        // this.setState({
+        //     data
+        // })
     }
 
     checkCase = () => {
@@ -55,7 +92,39 @@ class SearchEngine extends Component {
                     <FormControl className="mr-sm-1 searchBar" type="text" placeholder="Type a word to Search." name="userInput"/>
                     <Button id="searchBtn" variant="btn btn-light purple-btn" type="submit">Search</Button>
                 </Form>
+
+                <Download data={this.state.data} />
+
                 <h3> Search Result: {this.state.term}</h3>
+
+                {/*\ when click search button*/}
+                {/*    pass the term to backend, insert into search table/ done*/}
+                {/*    query the page table. find all the entries with certain words.*/}
+                {/*    display the result*/}
+                {/*    download the result*/}
+
+                <div className="container">
+                    {this.state.data.map((data, i) => {
+                        return (
+                            <div key={i} className="row">
+                                <div className="col-sm-2"></div>
+                                <div className="col-sm-8">
+                                    <div className="box">
+                                        <input data-index={i} id="ch" className="checkbox" type="checkbox" name="check" onChange={this.checkBox}/>
+                                        {/*<button className="btn btn-outline-primary" data-index={i} onClick={this.delete}> Delete </button>*/}
+                                        <h4>{data.wordname}</h4>
+                                        <h4>Title: {data.title}</h4>
+                                        <h4>Description: {data.description}</h4>
+                                        <h5><a href={data.url}>{data.url}</a></h5>
+                                        <h5>id: {data._id}</h5>
+                                        <h5>Created At: {data.createdAt}</h5>
+                                        <h5>Time to Search: </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
 
             </div>
         )
