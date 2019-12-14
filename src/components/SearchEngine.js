@@ -19,21 +19,34 @@ class SearchEngine extends Component {
     search = async (e) => {
         e.preventDefault();
         const term = e.target.elements.userInput.value;
-        // console.log(term);
+        const username = e.target.elements.userInput.value;
         this.setState({
             term
         })
+        // console.log(term);
+
         /** send the term to back end */
         axios.post('http://localhost:5000/custom', {term})
             .then((res)=>{
                 console.log(res.data);
                 // console.log('Pass term to back end!');
-            })
-        axios.get('http://localhost:5000/admin')
-            .then((res)=>{
-                console.log(res.data);
-                // console.log('Pass term to back end!');
-            })
+            });
+
+        const api_call = await fetch(`http://localhost:5000/admin/${term}`);
+        const data = await api_call.json();
+        console.log(data);
+
+        // axios.get('http://localhost:5000/admin', {params: {wordname: this.state.term}})
+        //     .then((res)=>{
+        //         console.log(res.data);
+        //         // console.log('Pass term to back end!');
+        //     })
+        // axios.get('http://localhost:5000/admin')
+        //     // pass term as /admin/term
+        //     .then((res)=>{
+        //         console.log(res.data);
+        //         // console.log('Pass term to back end!');
+        //     })
     }
 
     checkCase = () => {
