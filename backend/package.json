@@ -23,5 +23,9 @@
     "nodemon": "^2.0.2",
     "pg": "^7.13.0",
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "crawler": "^1.2.1",
+    "statman-stopwatch": "^2.11.1"
   }
 }

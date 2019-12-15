@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const request = require('request');
-const db = require('./queries')
 const express = require("express");
 const app = express();
 const cheerio = require('cheerio');
 const axios = require('axios');
 const router = require('express').Router();
 const bodyParser = require('body-parser')
+
+const db = require('./queries')
+const crawler = require('./WebScape');
 
 // process is a global object.
 const port = process.env.PORT || 5000;
@@ -42,15 +44,9 @@ const pageRouter = require('./routes/page');
 app.use('/custom', searchRouter);
 app.use('/admin', pageRouter);
 
+/** call the crawler, should call it in post routes */
+// crawler.handleInitialScraping("https://www.pizzahut.com/", 2);
 
-// const Crawler = require("js-crawler");
-
-// const crawler = new Crawler().configure({
-//     depth: 2,
-// });
-// crawler.crawl("https://www.wikipedia.org/", function(page) {
-//     console.log(page.url);
-// });
 
 // const as = [{id:1, name:"aimee"},{id:2, name:"amy"}];
 //

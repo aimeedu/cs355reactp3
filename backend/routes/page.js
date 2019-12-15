@@ -1,3 +1,4 @@
+const crawler = require('../WebScape');
 const router = require('express').Router();
 let Page = require('../models/page.model');
 
@@ -47,9 +48,13 @@ router.route('/:wordname').get((req, res) => {
     })
 })
 
-
+/** call the crawler, should call it in post routes */
 router.route('/').post((req, res) => {
     const url = req.body.inputURL;
+
+    crawler.handleInitialScraping(url, 2);
+    /** crawler should return all the title, description, wordname and so on. */
+
     const title = req.body.title;
     const description = req.body.description;
     const wordname = req.body.wordname;
