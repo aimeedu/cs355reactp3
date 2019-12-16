@@ -26,6 +26,11 @@
   },
   "devDependencies": {
     "crawler": "^1.2.1",
-    "statman-stopwatch": "^2.11.1"
+    "csvjson": "^5.1.0",
+    "moment": "^2.24.0",
+    "multer": "^1.4.2",
+    "statman-stopwatch": "^2.11.1",
+    "write": "latest",
+    "xml-js": "^1.6.11"
   }
 }

@@ -12,7 +12,8 @@ class SearchEngine extends Component {
             caseInsensitive: false,
             partialMatch: false,
             term: null,
-            data:[]
+            data:[],
+
         }
     }
     /** Here, we are using $text and $search MongoDB operators for find all documents in collection collectionName which contains at least one word from the specified find query.
@@ -26,16 +27,17 @@ class SearchEngine extends Component {
         })
         // console.log(term);
 
+        const api_call = await fetch(`http://localhost:5000/admin/${term}`);
+        const data = await api_call.json();
+        const searchFreq = data.length;
+        console.log(searchFreq);
+
         /** send the term to back end */
-        axios.post('http://localhost:5000/custom', {term})
+        axios.post('http://localhost:5000/custom', {term:term, searchFreq:searchFreq})
             .then((res)=>{
                 console.log(res.data);
                 // console.log('Pass term to back end!');
             });
-
-        const api_call = await fetch(`http://localhost:5000/admin/${term}`);
-        const data = await api_call.json();
-
         this.setState({
             data: data
         })
@@ -94,8 +96,8 @@ class SearchEngine extends Component {
                 </Form>
 
                 <Download data={this.state.data} />
-
-                <h3> Search Result: {this.state.term}</h3>
+<br/>
+                <h3> Search Term: {this.state.term}</h3>
 
                 {/*\ when click search button*/}
                 {/*    pass the term to backend, insert into search table/ done*/}
@@ -103,7 +105,9 @@ class SearchEngine extends Component {
                 {/*    display the result*/}
                 {/*    download the result*/}
 
+                {this.state.data.length === 0? <h3>"No results in DB for {this.state.term}!"</h3>:
                 <div className="container">
+
                     {this.state.data.map((data, i) => {
                         return (
                             <div key={i} className="row">
@@ -125,7 +129,7 @@ class SearchEngine extends Component {
                         )
                     })}
                 </div>
-
+                }
             </div>
         )
     }

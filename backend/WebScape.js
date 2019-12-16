@@ -1,5 +1,8 @@
 const Crawler = require("crawler");
 const Stopwatch = require('statman-stopwatch');
+const Page = require('./models/page.model'),
+      PageWord  = require("./models/pageword.model"),
+      Word      = require("./models/word.model");
 
 let date = new Date(); // Default value for lastModified if site is missing the required header
 let sitesVisited = []; // Array to keep track of visited sites for BFS
@@ -35,7 +38,7 @@ const handleInitialScraping = (startingUrl, limit) =>{
                 let $ = res.$;
 
                 page.title = res.$('h1').text().trim(); // Gets the title tag using h1
-                console.log("Page title: \n" + page.title);
+                console.log("Page title: " + page.title);
                 page.url = startingUrl;
                 // We need to find the meta tag  that has description and get the content
                 page.description = res.$('meta[name="description"]').attr('content'); // Gets the description
@@ -45,7 +48,7 @@ const handleInitialScraping = (startingUrl, limit) =>{
                     /* If the description is unavailable set the description to the title */
                     page.description = page.title;
                 }
-                console.log("Page description: \n" + page.description);
+                console.log("Page description: " + page.description);
 
                 page.lastModified = res.headers["last-modified"]; // Gets the last modified
                 if(page.lastModified == null) {             // If last modified is not available we use current time
@@ -76,8 +79,16 @@ const handleInitialScraping = (startingUrl, limit) =>{
                     }
                 });
 
-                page.wordsFreq = wordsFreq;
-                console.log(wordsFreq)
+                /** convert counts {  "word1": 34, "word2": 5, "word3": 1 ... } to an array of array [[word, freq], [word1, 34], [word2, 5], [word3, 1] ...] */
+                let converted = Object.entries(wordsFreq);
+                // let len = converted.length;
+
+// console.log(wordsFreq);
+                page.wordsFreq = converted;
+                // console.log(page.wordsFreq);
+                console.log(page.wordsFreq[0]);
+                // console.log(converted);
+                // console.log(wordsFreq);
                 page.words = words;
 
 
@@ -99,6 +110,10 @@ const handleInitialScraping = (startingUrl, limit) =>{
                 });
 
                 page.timeToIndex = stopwatch.stop();
+
+                /** call the function to insert data into to the table*/
+                // insertDB(page);
+                insertAll(page);
                 console.log("Time Interval was: " + (stopwatch.stopTime-stopwatch.startTime));
 
                 let randomIndex = Math.floor(Math.random() * Math.floor(hrefs.length));
@@ -112,6 +127,106 @@ const handleInitialScraping = (startingUrl, limit) =>{
     c.queue(startingUrl);
 };
 //handleInitialScraping method ends
+/** insert into page table, then call the function insert into word table, then pageword table */
+// const insertDB = (page) => {
+//
+//     let pageInstance = new Page ({
+//         url: page.url,
+//         title: page.title,
+//         description: page.description,
+//         lastModified: page.lastModified,
+//         lastIndexed: page.lastIndexed,
+//         timeToIndex: page.timeToIndex
+//         // wordname: page.words,
+//         // freq: page.wordsFreq
+//     });
+//
+//     // put into db:
+//     Page.create(pageInstance)
+//         .then((pageResult)=>{
+//             console.log("New Page added into database: ");
+//             // console.log(pageResult);
+//             enterWordIntoDb(page, pageResult, pageInstance);
+//         })
+//         .catch((error)=>{
+//             console.log(error);
+//         });
+// }
+
+const insertAll = (page) =>{
+    let instances = [];
+    page.wordsFreq.forEach((word)=>{
+        let inst = new Page ({
+            url: page.url,
+            title: page.title,
+            description: page.description,
+            lastModified: page.lastModified,
+            lastIndexed: page.lastIndexed,
+            timeToIndex: page.timeToIndex,
+            wordname: word[0],
+            freq: word[1]
+        });
+        instances.push(inst);
+    });
+
+    Page.insertMany(instances)
+        .then((wordResults)=>{
+            // console.log("Word Results created: ");
+            // console.log(wordResults);
+            // enterPageWordIntoDb(page, wordResults, pageInstance);
+        })
+        .catch((error)=>{
+            console.log(error);
+        });
+
+};
+
+
+
+// const enterWordIntoDb = (page, pageResult, pageInstance) =>{
+//     let wordInstances = [];
+//     page.words.forEach((word)=>{
+//         let wordInstance = new Word ({
+//             wordname: word
+//         });
+//         wordInstances.push(wordInstance);
+//     });
+//
+//     Word.insertMany(wordInstances)
+//         .then((wordResults)=>{
+//             // console.log("Word Results created: ");
+//             // console.log(wordResults);
+//             enterPageWordIntoDb(page, wordResults, pageInstance);
+//         })
+//         .catch((error)=>{
+//             console.log(error);
+//         });
+//
+// };
+
+// const enterPageWordIntoDb = (page, wordResults, pageInstance) =>{
+//     let pageWordInstances = [];
+//
+//     wordResults.forEach((wordObj)=>{
+//         let pageWordInstance = new PageWord({
+//             pageId: pageInstance,
+//             wordId: wordObj._id,
+//             freq: page.wordsFreq[wordObj.wordname]
+//         });
+//         pageWordInstances.push(pageWordInstance);
+//     });
+//
+//     PageWord.insertMany(pageWordInstances)
+//         .then((pageWordResults)=>{
+//             // console.log("Page Word Results created: ");
+//             // console.log(pageWordResults);
+//             console.log("Database has been succesfully updated.");
+//         })
+//         .catch((error)=>{
+//             console.log(error);
+//         });
+//
+// };
 
 
 const validLink = (href) =>{
@@ -123,8 +238,6 @@ const isLocal = (href)=>{
 };
 
 // handleInitialScraping("https://www.pizzahut.com/", 10);
-
-
 
 
 module.exports = {

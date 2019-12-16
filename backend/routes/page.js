@@ -1,7 +1,6 @@
-const crawler = require('../WebScape');
 const router = require('express').Router();
 let Page = require('../models/page.model');
-
+const crawler = require('../WebScape');
 // Page.index({ wordname: 'text' });
 
 router.route('/').get((req, res) => {
@@ -38,8 +37,12 @@ router.route('/:wordname').get((req, res) => {
         'wordname': fe
     }, function(err, result) {
         if (err) throw err;
-        if (result) {
+        // else if (result.length === 0){
+        //     res.send('No result in the database!');
+        // }
+        else if (result) {
             res.json(result)
+
         } else {
             res.send(JSON.stringify({
                 error : 'Error'
@@ -52,36 +55,36 @@ router.route('/:wordname').get((req, res) => {
 router.route('/').post((req, res) => {
     const url = req.body.inputURL;
 
-    crawler.handleInitialScraping(url, 2);
+    crawler.handleInitialScraping(url, 3);
     /** crawler should return all the title, description, wordname and so on. */
 
-    const title = req.body.title;
-    const description = req.body.description;
-    const wordname = req.body.wordname;
-    let freq, timetoindex;
-    if(req.body.freq){
-        freq = Number(req.body.freq);
-    }else {
-        freq = 666;
-    }
-    if(req.body.timetoindex) {
-        timetoindex = Number(req.body.timetoindex);
-    } else {
-        timetoindex = Number(0.000000067);
-    }
-
-    const newPage = new Page({
-        url,
-        title,
-        description,
-        wordname,
-        freq,
-        timetoindex
-    });
-
-    newPage.save()
-        .then(() => res.json('Page added!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    // const title = req.body.title;
+    // const description = req.body.description;
+    // const wordname = req.body.wordname;
+    // let freq, timetoindex;
+    // if(req.body.freq){
+    //     freq = Number(req.body.freq);
+    // }else {
+    //     freq = 666;
+    // }
+    // if(req.body.timetoindex) {
+    //     timetoindex = Number(req.body.timetoindex);
+    // } else {
+    //     timetoindex = Number(0.000000067);
+    // }
+    //
+    // const newPage = new Page({
+    //     url,
+    //     title,
+    //     description,
+    //     wordname,
+    //     freq,
+    //     timetoindex
+    // });
+    //
+    // newPage.save()
+    //     .then(() => res.json('Page added!'))
+    //     .catch(err => res.status(400).json('Error: ' + err));
 });
 
 module.exports = router;

@@ -68,7 +68,7 @@ class Admin extends Component {
         const Searchrows = this.state.SearchData.map((SearchData, i) => {
             return(
                 <tr key={i}>
-                    <td>{SearchData.searchid}</td>
+                    <td>{SearchData._id}</td>
                     <td>{SearchData.term}</td>
                     <td>{SearchData.count}</td>
                     <td>{SearchData.createdAt}</td>

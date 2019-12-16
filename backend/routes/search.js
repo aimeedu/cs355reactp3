@@ -11,12 +11,12 @@ router.route('/').get((req, res) => {
 });
 
 /** endpoints. post request handle insert into search table. */
-
 router.route('/').post((req, res) => {
     let timetosearch;
     const term = req.body.term;
+    const count = req.body.searchFreq;
     /** when front end query the page table, return the count to post in search table */
-    const count = 404;
+
     if(req.body.timetosearch){
         timetosearch = req.body.timetosearch
     } else {

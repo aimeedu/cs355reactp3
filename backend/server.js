@@ -7,8 +7,24 @@ const axios = require('axios');
 const router = require('express').Router();
 const bodyParser = require('body-parser')
 
-const db = require('./queries')
 const crawler = require('./WebScape');
+
+const
+    Search = require('./models/search.model'),
+    Page = require('./models/page.model'),
+    PageWord  = require("./models/pageword.model"),
+    Word      = require("./models/word.model");
+const
+    multer       = require("multer"),
+    upload       = multer(),
+    convertXML   = require('xml-js'),
+    convertCSV   = require('csvjson'),
+    writeFile    = require('write'),
+    Crawler   = require("crawler"),
+    Stopwatch = require('statman-stopwatch'),
+    moment    = require("moment");
+
+
 
 // process is a global object.
 const port = process.env.PORT || 5000;
@@ -63,6 +79,73 @@ app.use('/admin', pageRouter);
 //     const re = as.find(a => a.name === req.params.name);
 //     res.send(re);
 // });
+
+// router.post("/sendResultsForSearchTerm", (req,res)=>{
+//     let searchTerm = req.body.searchTerm;
+//     enterSearchIntoDb(searchTerm);
+//     return res.json();
+// });
+
+//
+// let final;
+// let searchTermInstances = [];
+//
+// const enterSearchIntoDb = (term) =>{
+//     let stopwatch = new Stopwatch();
+//     stopwatch.start();
+//     let searchDate = moment().format('LLLL');
+//     let finalResults = {};
+//     let freqSum;
+//     let timeToSearch;
+//
+//     Word.find({wordName: term})
+//         .then(wordResult =>{
+//             finalResults.word = wordResult;
+//             let wordIds = [];
+//             wordResult.forEach(value =>{
+//                 wordIds.push(value._id);
+//             });
+//
+//             PageWord.find({
+//                 wordId: {
+//                     $in: [...wordIds]
+//                 }
+//             }).then(pageWordResult =>{
+//                 finalResults.pageWord = pageWordResult;
+//                 let pageIds = [];
+//                 pageWordResult.forEach(value =>{
+//                     freqSum += value.freq;
+//                     pageIds.push(value.pageId);
+//                 });
+//
+//                 Page.find({
+//                     _id: {
+//                         $in: [...pageIds]
+//                     }
+//                 }).then(pageResult =>{
+//                     finalResults.page = pageResult;
+//                     timeToSearch = stopwatch.stop();
+//                     // console.log(finalResults);
+//
+//                     let searchTermInstance = new Search({
+//                         terms: term,
+//                         count: freqSum,
+//                         searchDate: searchDate,
+//                         timeToSearch: timeToSearch
+//                     });
+//
+//                     searchTermInstances.push(searchTermInstance);
+//
+//                     final = finalResults;
+//                 });
+//             });
+//         })
+//         .catch(error =>{
+//             console.log(error);
+//         });
+//
+// };
+
 
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
